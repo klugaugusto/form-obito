@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Óbito</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            text-align: left;
+            margin-bottom: 5px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Formulário de Óbito</h1>
+        <form id="obitoForm">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" required><br>
+
+            <label for="nascimento">Nascimento</label>
+            <input type="date" id="nascimento" required><br>
+
+            <label for="filhoDe">Filho de</label>
+            <input type="text" id="filhoDe" required><br>
+
+            <label for="casouCom">Casou-se com</label>
+            <input type="text" id="casouCom" required><br>
+
+            <label for="abençoadoCom">O casal foi abençoado com</label>
+            <input type="text" id="abençoadoCom" required><br>
+
+            <label for="profissao">Profissão</label>
+            <input type="text" id="profissao" required><br>
+
+            <label for="comunidade">Membro da Comunidade</label>
+            <input type="text" id="comunidade" required><br>
+
+            <label for="falecimento">Faleceu em</label>
+            <input type="date" id="falecimento" required><br>
+
+            <label for="causaMorte">Causa da Morte</label>
+            <input type="text" id="causaMorte" required><br>
+
+            <label for="medico">Médico Atestador</label>
+            <input type="text" id="medico" required><br>
+
+            <label for="idade">Alcançou a idade de</label>
+            <input type="text" id="idade" readonly><br>
+
+            <label for="enlutados">Deixa enlutados</label>
+            <input type="text" id="enlutados" required><br>
+
+            <label for="oracao">Oração Memorial</label>
+            <textarea id="oracao" required></textarea><br>
+
+            <button type="button" onclick="enviarWhatsapp()">Enviar pelo Whatsapp</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('nascimento').addEventListener('change', calcularIdade);
+        document.getElementById('falecimento').addEventListener('change', calcularIdade);
+
+        function calcularIdade() {
+            var nascimento = new Date(document.getElementById('nascimento').value);
+            var falecimento = new Date(document.getElementById('falecimento').value);
+
+            var diff = falecimento - nascimento;
+
+            var anos = Math.floor(diff / (365 * 24 * 60 * 60 * 1000));
+            diff -= anos * (365 * 24 * 60 * 60 * 1000);
+
+            var meses = Math.floor(diff / (30 * 24 * 60 * 60 * 1000));
+            diff -= meses * (30 * 24 * 60 * 60 * 1000);
+
+            var dias = Math.floor(diff / (24 * 60 * 60 * 1000));
+
+            document.getElementById('idade').value = anos + ' anos, ' + meses + ' meses, ' + dias + ' dias';
+        }
+
+        function enviarWhatsapp() {
+            var numero = "+5551997858249";
+            var mensagem = "Formulário de Óbito:\n\n";
+
+            var campos = document.querySelectorAll('input, textarea');
+            campos.forEach(function(campo) {
+                mensagem += campo.previousElementSibling.textContent.replace(':', '') + ': ' + campo.value + '\n';
+            });
+
+            mensagem = encodeURIComponent(mensagem);
+
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                window.location.href = "whatsapp://send?text=" + mensagem + "&phone=" + numero;
+            } else {
+                window.open("https://web.whatsapp.com/send?text=" + mensagem + "&phone=" + numero);
+            }
+        }
+    </script>
+</body>
+</html>
